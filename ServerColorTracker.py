@@ -55,16 +55,17 @@ connection,addrClient=sock.accept()
 #####################################################################################
 
 
-######trackbar#########################################
-cv2.createTrackbar('h','Control Panel',1,180,nothing)
-cv2.createTrackbar('H','Control Panel',1,180,nothing)
 
-########################################################
 
 
 	
 cv2.namedWindow("DebugScreen")
-cv2.namedWindow('Control Panel')
+cv2.namedWindow("Control")
+######trackbar#########################################
+cv2.createTrackbar('h',"Control",1,180,nothing)
+cv2.createTrackbar('H',"Control",1,180,nothing)
+
+########################################################
 mListOfNaoCenter=[(0,0),(0,0),(0,0),(0,0)]
 font = cv2.FONT_HERSHEY_SIMPLEX
 lBlueCentersOld= []
@@ -72,8 +73,8 @@ lIndex=None
 try:
 	while(True):
 
-		H=cv2.getTrackbarPos('H','Control Panel')
-		h=cv2.getTrackbarPos('h','Control Panel')
+		H=cv2.getTrackbarPos('H',"Control")
+		h=cv2.getTrackbarPos('h',"Control")
 
 		###############Simulator#######################
 		data=connection.recv(1000000)
@@ -90,25 +91,14 @@ try:
 		lBlueLowerBound=(80,86,6)
 		lBlueCenters,lBlueMask,BlueRadius=FindTheCenterOfTheColoredTarget(im,lBlueUpperBound,lBlueLowerBound)	
 		if lBlueCentersOld!=None:
-			
-			#for target in lBlueCentersOld:
-			#	minDistance = 2000
-			#	i=0
-			#	for newPoint in lBlueCenters:
-			#		if Distance(newPoint,target)<minDistance:
-			#			minDistance=Distance(newPoint,target)
-			#			lIndex=lBlueCenters.index(newPoint)
-			#			i=i+1
-			#			print(i)
-			#	NaoPosition.append(lBlueCenters[lIndex])
-			#	i=i+1
-			for target in lBlueCentersOld:
+			for target in lBlueCenters:
 				MinDistance=10000000
-				for Point in lBlueCenters:
+				for Point in lBlueCentersOld:
 					if Distance(target, Point)<MinDistance:
-						lIndex=lBlueCenters.index(Point)
+						lIndex=lBlueCenters.index(target)
 						MinDistance=Distance(target, Point)
-				NaoPosition.append(lBlueCenters[lIndex])
+						print(Distance(target, Point))
+				NaoPosition.append(lBlueCenters[0])
 
 		
 		Result=im.copy()
